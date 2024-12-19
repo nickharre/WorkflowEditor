@@ -106,7 +106,7 @@ const FlowBuilder = () => {
           draggable
           onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'trigger')}
         >
-          Trigger
+          Split
         </div>
         <div
           className="p-2 mb-2 bg-slate-100 text-slate-800 rounded cursor-pointer"
