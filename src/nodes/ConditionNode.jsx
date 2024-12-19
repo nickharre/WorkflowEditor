@@ -1,10 +1,15 @@
 import { Handle } from 'reactflow';
-import { Fingerprint } from "@phosphor-icons/react";
+import { Strategy } from "@phosphor-icons/react";
 
-const ConditionNode = ({ data }) => (
-    <div className="p-4 bg-yellow-500 text-white flex place-content-center  rounded shadow-lg">
-      <Fingerprint />
-      <p className="text-sm">{data.label}</p>
+const WaitNode = ({ data }) => (
+    <div className="p-4 bg-slate-100 text-slate-800 rounded shadow-lg">
+        <div className="flex flex-wrap place-content-center">
+        <div className="flex items-center justify-center w-6 h-6 bg-rose-400 rounded-full mr-2">
+      <Strategy color="white"/>
+        </div>  
+        <p className="text-sm text-slate-500">{data.label}</p>
+      </div>
+      <p className="text-sm w-full">{data.description || 'No description provided'}</p>
       {/* Left handle (for incoming connections) */}
       <Handle type="target" position="top" id="a" />
       {/* Right handle (for outgoing connections) */}
@@ -12,4 +17,4 @@ const ConditionNode = ({ data }) => (
     </div>
   );
   
-  export default ConditionNode;
+  export default WaitNode;

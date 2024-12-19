@@ -93,6 +93,7 @@ const FlowBuilder = () => {
     'New Database Record',
     'New Transaction',
     'Split Audience',
+    'Message Engagement'
     ];
 
   return (
