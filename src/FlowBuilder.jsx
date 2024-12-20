@@ -16,6 +16,7 @@ import ConditionNode from './nodes/ConditionNode';
 import WaitNode from './nodes/WaitNode';
 import DatabaseNode from './nodes/DatabaseNode';
 
+
 const FlowBuilder = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -24,6 +25,7 @@ const FlowBuilder = () => {
   const [descriptionInput, setDescriptionInput] = useState(''); // Store description input
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+
 
   // Handle drag-and-drop
   const onDragOver = useCallback((event) => {
@@ -43,19 +45,24 @@ const FlowBuilder = () => {
 
       if (!type) return;
 
+      // Prefill the label using default labels
+      const defaultLabel = defaultLabels[type] || 'New Node';
+
       // Temporarily store the node and open the label + description prompt
       const newNode = {
         id: `${+new Date()}`,
         type,
         position,
-        data: { label: '', description: '' }, // Placeholder fields
+        data: { label: defaultLabel, description: '' },
       };
       setPendingNode(newNode); // Store the node in pending state
+      setSelectedLabel(defaultLabel); // Prefill the label
+      setDescriptionInput(''); // Clear description input
     },
     []
   );
 
-  // Handle label and description confirmation
+  // Confirm node details
   const confirmNodeData = () => {
     if (pendingNode) {
       setNodes((nds) =>
@@ -64,8 +71,8 @@ const FlowBuilder = () => {
           data: { label: selectedLabel, description: descriptionInput },
         })
       );
-      setPendingNode(null); // Clear pending node
-      setSelectedLabel(''); // Reset dropdown selection
+      setPendingNode(null);
+      setSelectedLabel('');
       setDescriptionInput('');
     }
   };
@@ -76,6 +83,7 @@ const FlowBuilder = () => {
     setDescriptionInput('');
   };
 
+
   const nodeTypes = {
     trigger: TriggerNode,
     action: ActionNode,
@@ -84,6 +92,16 @@ const FlowBuilder = () => {
     database: DatabaseNode
   };
 
+    // Default labels for node types
+    const defaultLabels = {
+        trigger: 'Split Audience',
+        action: 'Send Mailout',
+        condition: 'Message Engagement',
+        wait: 'Wait',
+        database: 'Existing Database Record'
+      };
+    
+
   // Dropdown options for labels
   const labelOptions = [
     'Send Mailout', 
@@ -91,7 +109,9 @@ const FlowBuilder = () => {
     'Send Push Notification',
     'Wait',
     'New Database Record',
+    'Existing Database Record',
     'New Transaction',
+    'Previous Transaction',
     'Split Audience',
     'Message Engagement'
     ];
@@ -100,7 +120,7 @@ const FlowBuilder = () => {
     <div className="flex w-screen h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="w-1/5 bg-white shadow-lg p-4">
-        <h3 className="text-xl font-bold mb-2">New Journey</h3>
+        <h3 className="text-2xl font-bold mb-2">New Journey</h3>
         <h3 className="text-md font-bold mb-2">Drag Nodes</h3>
         <div
           className="p-2 mb-2 bg-slate-100 text-slate-800 rounded cursor-pointer"
@@ -164,21 +184,21 @@ const FlowBuilder = () => {
       {pendingNode && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-lg w-1/3">
-            <h2 className="text-xl font-bold mb-4">Set Node Details</h2>
-            <label className="block mb-2 font-semibold">Label</label>
+            <h2 className="text-xl font-bold mb-4">New Node</h2>
+            <label className="block mb-2 font-semibold">Type</label>
             <select
               className="w-full p-2 border rounded mb-4"
               value={selectedLabel}
               onChange={(e) => setSelectedLabel(e.target.value)}
             >
-              <option value="" disabled>Select a label</option>
+              <option value="" disabled>Select a type</option>
               {labelOptions.map((option, index) => (
                 <option key={index} value={option}>
                   {option}
                 </option>
               ))}
             </select>
-            <label className="block mb-2 font-semibold">Description</label>
+            <label className="block mb-2 font-semibold">Detail</label>
             <textarea
               className="w-full p-2 border rounded mb-4"
               placeholder="Enter node description"
